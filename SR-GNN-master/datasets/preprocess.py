@@ -33,12 +33,12 @@ with open(dataset, "r") as f:
             date = time.mktime(time.strptime(curdate, '%Y-%m-%d'))
             sess_date[curid] = date
         curid = sessid
-        item = data['item_id'], int(data['timeframe'])
+        item = data['item_id'], int(data['date'])
         curdate = ''
         if opt.dataset == 'yoochoose':
-            curdate = data['timestamp']
+            curdate = data['date']
         else:
-            curdate = data['eventdate']
+            curdate = data['date']
 
         if sessid in sess_clicks:
             sess_clicks[sessid] += [item]
