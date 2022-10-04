@@ -168,11 +168,11 @@ for seq in tes_seqs:
     all += len(seq)
 print('avg length: ', all/(len(tra_seqs) + len(tes_seqs) * 1.0))
 
-else:
-    if not os.path.exists('sample'):
-        os.makedirs('sample')
-    pickle.dump(tra, open('sample/train.txt', 'wb'))
-    pickle.dump(tes, open('sample/test.txt', 'wb'))
-    pickle.dump(tra_seqs, open('sample/all_train_seq.txt', 'wb'))
+
+if not os.path.exists('sample'):
+    os.makedirs('sample')
+pickle.dump(tra, open('sample/train.txt', 'wb'))
+pickle.dump(tes, open('sample/test.txt', 'wb'))
+pickle.dump(tra_seqs, open('sample/all_train_seq.txt', 'wb'))
 
 print('Done.')
