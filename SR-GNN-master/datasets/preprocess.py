@@ -14,7 +14,7 @@ import operator
 import datetime
 import os
 
-dataset = 'data/train_sessions.csv'
+dataset = 'dirve/MyDrive/data/train_sessions.csv'
 
 
 print("-- Starting @ %ss" % datetime.datetime.now())
