@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python36
 # -*- coding: utf-8 -*-
 """
@@ -14,13 +15,16 @@ import operator
 import datetime
 import os
 
-dataset = '/content/dirve/MyDrive/data_1/train_sessions.csv'
+
+dataset = 'C:/Temp/train_sessions.csv'
+
 
 
 print("-- Starting @ %ss" % datetime.datetime.now())
 with open(dataset, "r") as f:
     
-    reader = csv.DictReader(f, delimiter=';')
+
+    reader = csv.DictReader(f, delimiter=',')
     sess_clicks = {}
     sess_date = {}
     ctr = 0
@@ -30,12 +34,12 @@ with open(dataset, "r") as f:
         sessid = data['session_id']
         if curdate and not curid == sessid:
             date = ''
-            date = time.mktime(time.strptime(curdate, '%Y-%m-%d'))
+            #date = time.mktime(time.strptime(curdate, '%Y-%m-%d'))
             sess_date[curid] = date
         curid = sessid
-        item = data['item_id'], int(data['date'])
+        item = data['item_id']
         curdate = ''
-        if opt.dataset == 'yoochoose':
+        if dataset == 'yoochoose':
             curdate = data['date']
         else:
             curdate = data['date']
@@ -46,10 +50,10 @@ with open(dataset, "r") as f:
             sess_clicks[sessid] = [item]
         ctr += 1
     date = ''
-    if opt.dataset == 'yoochoose':
-        date = time.mktime(time.strptime(curdate[:19], '%Y-%m-%dT%H:%M:%S'))
-    else:
-        date = time.mktime(time.strptime(curdate, '%Y-%m-%d'))
+    if dataset == 'yoochoose':
+        #date = time.mktime(time.strptime(curdate[:19], '%Y-%m-%dT%H:%M:%S'))
+    #else:
+        #date = time.mktime(time.strptime(curdate, '%Y-%m-%d'))
         for i in list(sess_clicks):
             sorted_clicks = sorted(sess_clicks[i], key=operator.itemgetter(1))
             sess_clicks[i] = [c[0] for c in sorted_clicks]
@@ -85,6 +89,8 @@ for s in list(sess_clicks):
         sess_clicks[s] = filseq
 
 
+dates = list(sess_date.items())
+tra_sess = dates
 
 # Choosing item count >=5 gives approximately the same number of items as reported in paper
 item_dict = {}
@@ -113,7 +119,7 @@ def obtian_tra():
     print(item_ctr)     # 43098, 37484
     return train_ids, train_dates, train_seqs
 
-
+'''
 # Convert test sessions to sequences, ignoring items that do not appear in training set
 def obtian_tes():
     test_ids = []
@@ -132,9 +138,9 @@ def obtian_tes():
         test_seqs += [outseq]
     return test_ids, test_dates, test_seqs
 
-
+'''
 tra_ids, tra_dates, tra_seqs = obtian_tra()
-tes_ids, tes_dates, tes_seqs = obtian_tes()
+#tes_ids, tes_dates, tes_seqs = obtian_tes()
 
 
 def process_seqs(iseqs, idates):
@@ -153,26 +159,26 @@ def process_seqs(iseqs, idates):
 
 
 tr_seqs, tr_dates, tr_labs, tr_ids = process_seqs(tra_seqs, tra_dates)
-te_seqs, te_dates, te_labs, te_ids = process_seqs(tes_seqs, tes_dates)
+#te_seqs, te_dates, te_labs, te_ids = process_seqs(tes_seqs, tes_dates)
 tra = (tr_seqs, tr_labs)
-tes = (te_seqs, te_labs)
+#tes = (te_seqs, te_labs)
 print(len(tr_seqs))
-print(len(te_seqs))
+#print(len(te_seqs))
 print(tr_seqs[:3], tr_dates[:3], tr_labs[:3])
-print(te_seqs[:3], te_dates[:3], te_labs[:3])
+#print(te_seqs[:3], te_dates[:3], te_labs[:3])
 all = 0
 
 for seq in tra_seqs:
     all += len(seq)
-for seq in tes_seqs:
+#for seq in tes_seqs:
     all += len(seq)
-print('avg length: ', all/(len(tra_seqs) + len(tes_seqs) * 1.0))
+#print('avg length: ', all/(len(tra_seqs) + len(tes_seqs) * 1.0))
 
 
 if not os.path.exists('sample'):
     os.makedirs('sample')
 pickle.dump(tra, open('sample/train.txt', 'wb'))
-pickle.dump(tes, open('sample/test.txt', 'wb'))
+#pickle.dump(tes, open('sample/test.txt', 'wb'))
 pickle.dump(tra_seqs, open('sample/all_train_seq.txt', 'wb'))
 
 print('Done.')
